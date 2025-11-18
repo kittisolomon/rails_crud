@@ -1,5 +1,5 @@
 class Product < ApplicationRecord
-    validates :name, presence: true, uniqueness: true, length: {minimum:6, maximum:255}, presence: { "Please enter your name" }
+    validates :name, presence: true, uniqueness: true, length: {minimum:6, maximum:255}
 
     validates :price, presence: true, numericality: {greater_than: 0}
  
