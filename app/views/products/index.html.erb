@@ -11,6 +11,13 @@
     <%= link_to "Add Product", "/products/new", class: "btn btn-success" %>
   </div>
 </div>
+  <%# Success message - appears after form submission %>
+        <% if flash[:notice].present? %>
+          <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><%= flash[:notice] %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+  <% end %>
 
 <div class="card shadow-sm">
   <% if @products.any? %>
@@ -52,10 +59,9 @@
                 </td>
                 <td><%= product.created_at.strftime("%B %d, %Y") %></td>
                 <td>
-               <%= link_to "View", product_path(product), class: "btn btn-primary", role: "button" %>
+                <%= link_to "View", product_path(product), class: "btn btn-primary", role: "button" %>
                 <%= link_to "Edit", edit_product_path(product), class: "btn btn-warning", role: "button" %>
-                <%= link_to "Delete", product_path(product), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger", role: "button" %>
-
+                <%= link_to "Delete", product_path(product),data: { turbo_method: :delete },class: "btn btn-danger" %>
                 </td>
               </tr>
             <% end %>
