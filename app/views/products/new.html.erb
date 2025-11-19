@@ -17,26 +17,27 @@
           </div>
         <% end %>
 
-        <%= form_with(model: @product, local: true) do |form| %>
-
-          <div class="mb-3">
-            <%= form.label :name, 'Product Name', class: 'form-label fw-semibold' %>
-            <%= form.text_field :name, 
-                  class: "form-control #{'is-invalid' if @product.errors[:name].any?}", 
-                  placeholder: 'Enter product name' %>
-            <% if @product.errors[:name].any? %>
-              <div class="invalid-feedback d-block">
-                <i class="bi bi-exclamation-circle-fill me-1"></i>
-                <%= @product.errors[:name].join(', ') %>
-              </div>
-            <% end %>
+        <%= form_with(model: @product, local: true, class: "needs-validation") do |form| %>
+          <div class="row">
+            <div class="col-12 mb-3">
+              <%= form.label :name, class: 'form-label fw-semibold' %>
+              <%= form.text_field :name, 
+                    class: "form-control #{'is-invalid' if @product.errors[:name].any?}", 
+                    placeholder: 'Enter product name' %>
+              <% if @product.errors[:name].any? %>
+                <div class="invalid-feedback d-block">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>
+                  <%= @product.errors[:name].join(', ') %>
+                </div>
+              <% end %>
+            </div>
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <%= form.label :price, class: 'form-label fw-semibold' %>
               <div class="input-group">
-                <span class="input-group-text">$</span>
+                <span class="input-group-text">₦</span>
                 <%= form.number_field :price, 
                       step: '0.01', 
                       min: '0', 
@@ -70,8 +71,7 @@
             <div class="col-md-6 mb-3">
               <%= form.label :sku, 'SKU', class: 'form-label fw-semibold' %>
               <%= form.text_field :sku, 
-                    class: "form-control #{'is-invalid' if @product.errors[:sku].any?}",
-                    value: @product.sku,
+                    class: "form-control #{'is-invalid' if @product.errors[:sku].any?}", 
                     placeholder: 'Enter SKU' %>
               <% if @product.errors[:sku].any? %>
                 <div class="invalid-feedback d-block">

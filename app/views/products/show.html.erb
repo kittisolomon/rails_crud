@@ -1,0 +1,116 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="h5 mb-0">Product Details</h1>
+          <div>
+            <%= link_to 'Back to Products', products_path, class: 'btn btn-outline-secondary btn-sm me-2' %>
+            <%= link_to 'Edit', edit_product_path(@product), class: 'btn btn-warning btn-sm' %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <!-- Placeholder for product image -->
+            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 200px;">
+              <i class="bi bi-image fs-1 text-muted"></i>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <h2 class="h4 fw-bold mb-3"><%= @product.name %></h2>
+            
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-<%= @product.instock? ? 'success' : 'danger' %>-subtle text-<%= @product.instock? ? 'success' : 'danger' %> border border-<%= @product.instock? ? 'success' : 'danger' %>-subtle rounded-pill px-3 py-1 me-3">
+                <i class="bi bi-<%= @product.instock? ? 'check' : 'x' %>-circle-fill me-1"></i>
+                <%= @product.instock? ? 'In Stock' : 'Out of Stock' %>
+              </span>
+              <span class="text-muted">SKU: <span class="fw-semibold"><%= @product.sku %></span></span>
+            </div>
+            
+            <div class="mb-4">
+              <h3 class="h2 fw-bold text-primary"><%= number_to_currency(@product.price, unit: '₦') %></h3>
+              <span class="text-muted">Available: <span class="fw-semibold"><%= @product.quantity %> units</span></span>
+            </div>
+            
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary">
+                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+              </button>
+              <button class="btn btn-outline-secondary">
+                <i class="bi bi-heart me-2"></i>Save for Later
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="border-top pt-4">
+          <h5 class="fw-bold mb-3">Product Description</h5>
+          <div class="text-muted">
+            <% if @product.description.present? %>
+              <%= simple_format(@product.description) %>
+            <% else %>
+              <p class="text-muted fst-italic">No description available for this product.</p>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="border-top mt-4 pt-4">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <div class="d-flex align-items-center">
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                  <i class="bi bi-truck text-primary"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold">Free Shipping</div>
+                  <small class="text-muted">On orders over ₦50</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="d-flex align-items-center">
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                  <i class="bi bi-arrow-return-left text-primary"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold">Easy Returns</div>
+                  <small class="text-muted">30-day return policy</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="d-flex align-items-center">
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                  <i class="bi bi-shield-check text-primary"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold">Secure Checkout</div>
+                  <small class="text-muted">SSL encrypted</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-footer bg-light">
+        <div class="d-flex justify-content-between align-items-center">
+          <small class="text-muted">
+            <i class="bi bi-calendar3 me-1"></i> Added on <%= @product.created_at.strftime("%B %d, %Y") %>
+          </small>
+          <div>
+            <a href="#" class="text-decoration-none me-3">
+              <i class="bi bi-share me-1"></i> Share
+            </a>
+            <a href="#" class="text-decoration-none">
+              <i class="bi bi-flag me-1"></i> Report
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

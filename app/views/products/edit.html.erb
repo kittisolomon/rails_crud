@@ -1,0 +1,128 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="h5 mb-0">Edit Product</h1>
+          <%= link_to 'Back to Products', products_path, class: 'btn btn-outline-secondary btn-sm' %>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <%# Success message - appears after form submission %>
+        <% if flash[:notice].present? %>
+          <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i><%= flash[:notice] %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% end %>
+
+        <%= form_with(model: @product, url: product_path(@product), method: :patch, local: true, class: "needs-validation") do |form| %>
+
+          <div class="row">
+            <div class="col-12 mb-3">
+              <%= form.label :name, class: 'form-label fw-semibold' %>
+              <%= form.text_field :name, 
+                    class: "form-control #{'is-invalid' if @product.errors[:name].any?}", 
+                    placeholder: 'Enter product name' %>
+              <% if @product.errors[:name].any? %>
+                <div class="invalid-feedback d-block">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>
+                  <%= @product.errors[:name].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <%= form.label :price, class: 'form-label fw-semibold' %>
+              <div class="input-group">
+                <span class="input-group-text">₦</span>
+                <%= form.number_field :price, 
+                      step: '0.01', 
+                      min: '0', 
+                      class: "form-control #{'is-invalid' if @product.errors[:price].any?}", 
+                      placeholder: '0.00' %>
+              </div>
+              <% if @product.errors[:price].any? %>
+                <div class="invalid-feedback d-block">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>
+                  <%= @product.errors[:price].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <%= form.label :quantity, class: 'form-label fw-semibold' %>
+              <%= form.number_field :quantity, 
+                    min: '0', 
+                    class: "form-control #{'is-invalid' if @product.errors[:quantity].any?}", 
+                    placeholder: 'Enter quantity' %>
+              <% if @product.errors[:quantity].any? %>
+                <div class="invalid-feedback d-block">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>
+                  <%= @product.errors[:quantity].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <%= form.label :sku, 'SKU', class: 'form-label fw-semibold' %>
+              <%= form.text_field :sku, 
+                    class: "form-control #{'is-invalid' if @product.errors[:sku].any?}", 
+                    placeholder: 'Enter SKU' %>
+              <% if @product.errors[:sku].any? %>
+                <div class="invalid-feedback d-block">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>
+                  <%= @product.errors[:sku].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+            
+            <div class="col-md-6 mb-3 d-flex align-items-end">
+              <div class="form-check form-switch">
+                <%= form.check_box :instock, 
+                      class: "form-check-input #{'is-invalid' if @product.errors[:instock].any?}", 
+                      role: 'switch', 
+                      id: 'instockSwitch' %>
+                <%= form.label :instock, 'In Stock', class: 'form-check-label fw-semibold', for: 'instockSwitch' %>
+              </div>
+              <% if @product.errors[:instock].any? %>
+                <div class="invalid-feedback d-block">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>
+                  <%= @product.errors[:instock].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <%= form.label :description, 'Product Description', class: 'form-label fw-semibold' %>
+            <%= form.text_area :description, 
+                  class: "form-control #{'is-invalid' if @product.errors[:description].any?}", 
+                  rows: 3, 
+                  placeholder: 'Enter product description (optional)' %>
+            <% if @product.errors[:description].any? %>
+              <div class="invalid-feedback d-block">
+                <i class="bi bi-exclamation-circle-fill me-1"></i>
+                <%= @product.errors[:description].join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-2">
+            <%= link_to 'Cancel', products_path, class: 'btn btn-outline-secondary me-md-2' %>
+            <button type="submit" class="btn btn-primary px-4">
+              <i class="bi bi-pencil-square me-2"></i>Update Product
+            </button>
+          </div>
+
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>

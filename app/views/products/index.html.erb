@@ -6,7 +6,7 @@
   <div class="text-end">
     <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle">
       <i class="bi bi-box-seam-fill me-1"></i>
-      <%= pluralize(@products.count, "product") %>
+      <%= pluralize(@products_count, "product") %>
     </span>
     <%= link_to "Add Product", "/products/new", class: "btn btn-success" %>
   </div>
@@ -34,7 +34,7 @@
               <tr>
                 <td class="text-muted"><%= index + 1 %></td>
                 <td class="fw-semibold"><%= product.name %></td>
-                <td><%= number_to_currency(product.price) %></td>
+                <td><%= number_to_currency(product.price, unit: '₦') %></td>
                 <td><%= product.quantity %></td>
                 <td><code><%= product.sku %></code></td>
                 <td>
@@ -52,8 +52,10 @@
                 </td>
                 <td><%= product.created_at.strftime("%B %d, %Y") %></td>
                 <td>
-                 <%= link_to "Edit", "#", class: "btn btn-primary disabled", role: "button" %>
-                <%= link_to "Delete", "#", class: "btn btn-danger disabled", role: "button" %>
+               <%= link_to "View", product_path(product), class: "btn btn-primary", role: "button" %>
+                <%= link_to "Edit", edit_product_path(product), class: "btn btn-warning", role: "button" %>
+                <%= link_to "Delete", product_path(product), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger", role: "button" %>
+
                 </td>
               </tr>
             <% end %>
