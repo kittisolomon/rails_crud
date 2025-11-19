@@ -68,3 +68,5 @@ group :test do
 end
 
 gem "kaminari", "~> 1.2"
+
+gem "kaminari-bootstrap", "~> 3.0"

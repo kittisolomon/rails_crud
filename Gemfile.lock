@@ -160,6 +160,9 @@ GEM
     kaminari-activerecord (1.2.2)
       activerecord
       kaminari-core (= 1.2.2)
+    kaminari-bootstrap (3.0.1)
+      kaminari (>= 0.13.0)
+      rails
     kaminari-core (1.2.2)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
@@ -383,6 +386,7 @@ DEPENDENCIES
   jsbundling-rails
   kamal
   kaminari (~> 1.2)
+  kaminari-bootstrap (~> 3.0)
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
