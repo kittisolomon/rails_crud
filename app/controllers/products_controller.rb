@@ -1,10 +1,12 @@
 class ProductsController < ApplicationController
   def index
-    @products = Product.all
+    @products = Product.page(params[:page]).per(5)
   end
 
   def new
-    @product = Product.new
+    sku ="SKU-#{rand(10000000..99999999)}-#{Time.now.year}"
+
+    @product = Product.new(sku: sku)
   end
 
   def create

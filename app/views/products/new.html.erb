@@ -70,7 +70,8 @@
             <div class="col-md-6 mb-3">
               <%= form.label :sku, 'SKU', class: 'form-label fw-semibold' %>
               <%= form.text_field :sku, 
-                    class: "form-control #{'is-invalid' if @product.errors[:sku].any?}", 
+                    class: "form-control #{'is-invalid' if @product.errors[:sku].any?}",
+                    value: @product.sku,
                     placeholder: 'Enter SKU' %>
               <% if @product.errors[:sku].any? %>
                 <div class="invalid-feedback d-block">
