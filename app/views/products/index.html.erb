@@ -1,14 +1,18 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <h1 class="h3 mb-1">Products</h1>
-    <p class="text-muted mb-0">A quick overview of your inventory.</p>
+    <h1 class="h2 fw-bold text-primary mb-2">Product Inventory</h1>
+    <p class="text-muted mb-0">Manage your product catalog with ease</p>
   </div>
-  <div class="text-end">
-    <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle">
-      <i class="bi bi-box-seam-fill me-1"></i>
-      <%= pluralize(@products_count, "product") %>
-    </span>
-    <%= link_to "Add Product", "/products/new", class: "btn btn-success" %>
+  <div class="d-flex align-items-center gap-3">
+    <div class="d-none d-md-block">
+      <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+        <i class="bi bi-box-seam-fill me-2"></i>
+        <%= pluralize(@products_count, 'product') %> in stock
+      </span>
+    </div>
+    <%= link_to new_product_path, class: "btn btn-primary d-flex align-items-center gap-2" do %>
+      <i class="bi bi-plus-circle"></i> Add Product
+    <% end %>
   </div>
 </div>
   <%# Success message - appears after form submission %>
@@ -19,63 +23,146 @@
           </div>
   <% end %>
 
-<div class="card shadow-sm">
+<div class="row g-4">
   <% if @products.any? %>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">S/N</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">SKU</th>
-              <th scope="col">Status</th>
-              <th scope="col">Date Added</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @products.each_with_index do |product, index| %>
-              <tr>
-                <td class="text-muted"><%= index + 1 %></td>
-                <td class="fw-semibold"><%= product.name %></td>
-                <td><%= number_to_currency(product.price, unit: '₦') %></td>
-                <td><%= product.quantity %></td>
-                <td><code><%= product.sku %></code></td>
-                <td>
-                  <% if product.instock %>
-                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">
-                      <i class="bi bi-check-circle-fill me-1"></i>
-                      In stock
-                    </span>
-                  <% else %>
-                    <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle">
-                      <i class="bi bi-x-circle-fill me-1"></i>
-                      Out of stock
-                    </span>
-                  <% end %>
-                </td>
-                <td><%= product.created_at.strftime("%B %d, %Y") %></td>
-                <td>
-                <%= link_to "View", product_path(product), class: "btn btn-primary", role: "button" %>
-                <%= link_to "Edit", edit_product_path(product), class: "btn btn-warning", role: "button" %>
-                <%= link_to "Delete", product_path(product),data: { turbo_method: :delete },class: "btn btn-danger" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+    <% @products.each do |product| %>
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="card h-100">
+          <div class="position-relative">
+            <div class="position-absolute top-0 end-0 m-3">
+              <span class="badge <%= product.instock? ? 'bg-success' : 'bg-danger' %> bg-opacity-10 text-<%= product.instock? ? 'success' : 'danger' %> px-3 py-2 rounded-pill">
+                <i class="bi <%= product.instock? ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> me-1"></i>
+                <%= product.instock? ? 'In Stock' : 'Out of Stock' %>
+              </span>
+            </div>
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+             <% if product.image.attached? %>
+               <%= image_tag product.image, class: "img-fluid h-100 w-100", style: "object-fit: cover;" %>
+             <% else %>
+               <i class="bi bi-box-seam text-muted" style="font-size: 4rem; opacity: 0.5;"></i>
+             <% end %>
+              </div>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-1 text-truncate" title="<%= product.name %>">
+                <%= product.name %>
+              </h5>
+              <span class="badge bg-primary bg-opacity-10 text-primary">
+                <%= number_to_currency(product.price, unit: '₦') %>
+              </span>
+            </div>
+            <p class="text-muted small mb-3">
+              <i class="bi bi-upc me-1"></i> <%= product.sku %>
+            </p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <span class="text-muted small">Quantity:</span>
+                <span class="fw-semibold"><%= product.quantity %></span>
+              </div>
+              <div class="text-muted small">
+                <i class="bi bi-calendar3 me-1"></i> <%= product.created_at.strftime("%b %d, %Y") %>
+              </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-auto">
+              <%= link_to product_path(product), class: "btn btn-outline-primary btn-sm flex-grow-1 flex-md-grow-0" do %>
+                <i class="bi bi-eye me-1"></i> View
+              <% end %>
+              <div class="btn-group" role="group">
+                <%= link_to edit_product_path(product), class: "btn btn-outline-secondary btn-sm" do %>
+                  <i class="bi bi-pencil-square"></i>
+                <% end %>
+                <button type="button" 
+                        class="btn btn-outline-danger btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#deleteProductModal"
+                        data-product-name="<%= product.name %>"
+                        data-product-url="<%= product_path(product) %>">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="col-12">
+      <div class="card border-0 text-center p-5">
+        <div class="card-body">
+          <i class="bi bi-box-seam display-1 text-muted mb-4"></i>
+          <h4 class="text-muted mb-3">No products found</h4>
+          <p class="text-muted mb-4">Get started by adding your first product to the inventory.</p>
+          <%= link_to new_product_path, class: "btn btn-primary px-4" do %>
+            <i class="bi bi-plus-circle me-2"></i> Add Product
+          <% end %>
+        </div>
       </div>
     </div>
-  <% else %>
-    <div class="card-body text-center py-5">
-      <i class="bi bi-box-seam display-4 text-muted mb-3"></i>
-      <p class="text-muted mb-0">You don't have any products yet.</p>
-    </div>
   <% end %>
-  <div class="card-footer mt-4">
-  <%= paginate @products %>
+</div>
+
+<% if @products.any? %>
+  <div class="d-flex justify-content-center mt-5">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <li class="page-item <%= 'disabled' unless @products.prev_page %>">
+          <%= link_to "Previous", "?page=#{@products.prev_page}", class: "page-link" %>
+        </li>
+        <% (1..@products.total_pages).each do |page| %>
+          <li class="page-item <%= 'active' if page == @products.current_page %>">
+            <%= link_to page, "?page=#{page}", class: "page-link" %>
+          </li>
+        <% end %>
+        <li class="page-item <%= 'disabled' unless @products.next_page %>">
+          <%= link_to "Next", "?page=#{@products.next_page}", class: "page-link" %>
+        </li>
+      </ul>
+    </nav>
+  </div>
+<% end %>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="productName"></strong>?</p>
+        <p class="text-muted small">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <%= link_to "Delete", "#", 
+            class: "btn btn-danger", 
+            id: "confirmDeleteBtn",
+            data: { 
+              turbo_method: :delete
+            } %>
+      </div>
+    </div>
   </div>
 </div>
+
+<%= javascript_tag nonce: true do %>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteModal = document.getElementById('deleteProductModal');
+    
+    if (deleteModal) {
+      deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const productName = button.getAttribute('data-product-name');
+        const productUrl = button.getAttribute('data-product-url');
+        
+        const productNameElement = deleteModal.querySelector('#productName');
+        const confirmButton = deleteModal.querySelector('#confirmDeleteBtn');
+        
+        productNameElement.textContent = '"' + productName + '"';
+        confirmButton.href = productUrl;
+      });
+    }
+  });
+<% end %>

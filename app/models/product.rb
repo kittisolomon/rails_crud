@@ -10,4 +10,10 @@ class Product < ApplicationRecord
     validates :sku, presence: true, uniqueness: true
 
     validates :instock, inclusion: { in: [true, false] }
+
+    has_one_attached :image
+
+    def self.search(query)
+      where("name ILIKE :query OR sku ILIKE :query", query: "%#{query}%")
+    end
 end

@@ -16,7 +16,11 @@
           <div class="col-md-4">
             <!-- Placeholder for product image -->
             <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 200px;">
-              <i class="bi bi-image fs-1 text-muted"></i>
+             <% if @product.image.attached? %>
+             <%= image_tag @product.image, class: "img-fluid h-100 w-100", style: "object-fit: cover;" %>
+             <% else %>
+            <i class="bi bi-image fs-1 text-muted"></i>
+            <% end %>
             </div>
           </div>
           <div class="col-md-8">

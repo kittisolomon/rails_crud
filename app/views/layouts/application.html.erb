@@ -1,60 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "Rails Crud App" %></title>
+    <title><%= content_for(:title) || "Product Manager" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Rails Crud App">
+    <meta name="application-name" content="Product Manager">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+    
+    <style>
+      :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4bb543;
+        --danger-color: #dc3545;
+        --light-bg: #f8f9fa;
+        --transition-speed: 0.3s;
+      }
+      
+      body {
+        background-color: var(--light-bg);
+      }
+      
+      .navbar {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      
+      .navbar-brand {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      
+      .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+      }
+      
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      
+      .btn {
+        border-radius: 6px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all var(--transition-speed) ease;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+      
+      .btn-primary:hover {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+      
+      .fade-in {
+        animation: fadeIn var(--transition-speed) ease-in;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .page-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      
+      .page-loading.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      
+      .spinner {
+        width: 3rem;
+        height: 3rem;
+      }
+      
+      footer {
+        background: #fff;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+      }
+    </style>
   </head>
   <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
       <div class="container">
-        <%= link_to "Rails Crud App", "/products", class: "navbar-brand" %>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <%= link_to products_path, class: "navbar-brand d-flex align-items-center" do %>
+          <i class="bi bi-box-seam-fill me-2"></i>
+          <span>Product Manager</span>
+        <% end %>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <%= link_to "Home", "/products", class: "nav-link" %>
+              <%= link_to "Products", products_path, class: "nav-link #{"active fw-bold" if current_page?(products_path)}" %>
             </li>
             <li class="nav-item">
-              <%= link_to "Add Product", "/products/new", class: "nav-link" %>
+              <%= link_to "Add Product", new_product_path, class: "nav-link #{"active fw-bold" if current_page?(new_product_path)}" %>
             </li>
           </ul>
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <%= link_to "Logout", "#", class: "nav-link" %>
-            </li>
-          </ul>
+          <%= form_with(url: products_path, method: :get, class: "d-flex") do |form| %>
+            <div class="input-group">
+              <%= form.text_field :search, 
+                    value: params[:search], 
+                    class: "form-control", 
+                    placeholder: "Search products...",
+                    "aria-label": "Search" %>
+              <button class="btn btn-light" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          <% end %>
         </div>
       </div>
     </nav>
 
-    <main class="container flex-grow-1">
+    <main class="container flex-grow-1 py-4 fade-in">
       <%= yield %>
     </main>
 
-    <footer class="bg-light py-3 mt-4 border-top">
-      <div class="container text-center text-muted">
-        &copy; <%= Time.current.year %> Rails Crud App
+    <footer class="mt-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Product Manager</h5>
+            <p class="text-muted">A simple product management system built with Ruby on Rails</p>
+          </div>
+          <div class="col-md-3">
+            <h6>Quick Links</h6>
+            <ul class="list-unstyled">
+              <li><%= link_to "Home", products_path, class: "text-decoration-none" %></li>
+              <li><%= link_to "Products", products_path, class: "text-decoration-none" %></li>
+              <li><%= link_to "Add Product", new_product_path, class: "text-decoration-none" %></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h6>Connect</h6>
+            <div class="d-flex gap-3">
+              <a href="#" class="text-decoration-none"><i class="bi bi-github fs-5"></i></a>
+              <a href="#" class="text-decoration-none"><i class="bi bi-twitter fs-5"></i></a>
+              <a href="#" class="text-decoration-none"><i class="bi bi-linkedin fs-5"></i></a>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="text-center text-muted">
+          <small>© <%= Time.current.year %> Product Manager. All rights reserved.</small>
+        </div>
       </div>
     </footer>
+    
+    <script>
+      // Smooth scrolling for anchor links
+      document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A' && e.target.getAttribute('href')?.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(e.target.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      });
+    </script>
   </body>
 </html>

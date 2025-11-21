@@ -20,6 +20,21 @@
         <%= form_with(model: @product, url: product_path(@product), method: :patch, local: true, class: "needs-validation") do |form| %>
 
           <div class="row">
+          <div class="col-12 mb-3">
+          <%= form.file_field :image, class: "form-control #{'is-invalid' if @product.errors[:image].any?}", accept: "image/*" %>
+          <% if @product.errors[:image].any? %>
+            <div class="invalid-feedback d-block">
+              <i class="bi bi-exclamation-circle-fill me-1"></i>
+              <%= @product.errors[:image].join(', ') %>
+            </div>
+          <% end %>
+          <% if @product.image.attached? %>
+            <div class="mt-3">
+              <p class="small text-muted mb-2">Current Image:</p>
+              <%= image_tag @product.image, class: "img-thumbnail", style: "width: 100px; height: 100px; object-fit: cover;" %>
+            </div>
+          <% end %>
+          </div>
             <div class="col-12 mb-3">
               <%= form.label :name, class: 'form-label fw-semibold' %>
               <%= form.text_field :name, 

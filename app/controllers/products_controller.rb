@@ -1,7 +1,12 @@
 class ProductsController < ApplicationController
   def index
-    @products = Product.page(params[:page]).per(5)
-    @products_count = Product.count
+    @products = if params[:search].present?
+      Product.search(params[:search])
+    else
+      Product.all
+    end
+    @products = @products.page(params[:page]).order(created_at: :desc).per(8)
+    @products_count = @products.total_count
   end
 
   def new
@@ -39,7 +44,8 @@ class ProductsController < ApplicationController
 
   def destroy
     @product = Product.find(params[:id])
-    if @product.destroy
+    @product.image.purge if @product.image.attached?
+    if @product.destroy 
     flash[:notice] = 'Product deleted successfully.'
     redirect_to products_path
     else
@@ -47,10 +53,10 @@ class ProductsController < ApplicationController
       render :show, status: :unprocessable_entity
     end
   end
-  
+
   private
 
   def product_params
-    params.require(:product).permit(:name, :price, :quantity, :sku, :instock, :description)
+    params.require(:product).permit(:name, :price, :quantity, :sku, :instock, :description, :image)
   end
 end
