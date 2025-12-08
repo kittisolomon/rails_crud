@@ -75,4 +75,4 @@ gem "cloudinary", "~> 2.4"
 
 gem "activestorage-cloudinary-service", "~> 0.2.3"
 
-gem "dotenv-rails", "~> 3.1"
+gem "dotenv-rails", "~> 3.2"
